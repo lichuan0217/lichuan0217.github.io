@@ -80,16 +80,16 @@
 
 
 
-<meta name="description" content="Sublime Text 3 是一个非常值得推荐的工具。插件给力，并且免费！">
+<meta name="description" content="在Mac环境下，将Linux的ISO镜像生成一个Linux的安装盘，和Linux下差不多，只是Mac下有一些自己的工具。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sublime Text 3 使用心得">
-<meta property="og:url" content="http://yoursite.com/2016/04/12/Sublime Text 3 使用心得/index.html">
+<meta property="og:title" content="在MAC中制作linux启动U盘">
+<meta property="og:url" content="http://yoursite.com/2016/04/13/在MAC中制作linux启动U盘/index.html">
 <meta property="og:site_name" content="Lemon Soda">
-<meta property="og:description" content="Sublime Text 3 是一个非常值得推荐的工具。插件给力，并且免费！">
-<meta property="og:updated_time" content="2016-04-13T03:09:11.000Z">
+<meta property="og:description" content="在Mac环境下，将Linux的ISO镜像生成一个Linux的安装盘，和Linux下差不多，只是Mac下有一些自己的工具。">
+<meta property="og:updated_time" content="2016-04-13T09:50:34.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sublime Text 3 使用心得">
-<meta name="twitter:description" content="Sublime Text 3 是一个非常值得推荐的工具。插件给力，并且免费！">
+<meta name="twitter:title" content="在MAC中制作linux启动U盘">
+<meta name="twitter:description" content="在Mac环境下，将Linux的ISO镜像生成一个Linux的安装盘，和Linux下差不多，只是Mac下有一些自己的工具。">
 
 
 
@@ -107,7 +107,7 @@
   };
 </script>
 
-  <title> Sublime Text 3 使用心得 | Lemon Soda </title>
+  <title> 在MAC中制作linux启动U盘 | Lemon Soda </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -237,7 +237,7 @@
             
             
               
-                Sublime Text 3 使用心得
+                在MAC中制作linux启动U盘
               
             
           </h1>
@@ -249,8 +249,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-04-12T17:55:51+08:00" content="2016-04-12">
-              2016-04-12
+            <time itemprop="dateCreated" datetime="2016-04-13T17:40:18+08:00" content="2016-04-13">
+              2016-04-13
             </time>
           </span>
 
@@ -260,8 +260,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/04/12/Sublime Text 3 使用心得/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/12/Sublime Text 3 使用心得/" itemprop="commentsCount"></span>
+                <a href="/2016/04/13/在MAC中制作linux启动U盘/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/13/在MAC中制作linux启动U盘/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -284,41 +284,28 @@
       
 
       
-        <pre><code>Sublime Text 3 是一个非常值得推荐的工具。插件给力，并且免费！
+        <pre><code>在Mac环境下，将Linux的ISO镜像生成一个Linux的安装盘，和Linux下差不多，只是Mac下有一些自己的工具。
 </code></pre><a id="more"></a>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="http://www.jianshu.com/p/3cb5c6f2421c" target="_blank" rel="external">如何优雅地使用Sublime Text3</a></p>
-<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><ul>
-<li>使用Package Control安装</li>
-</ul>
-<p>使用 Ctrl+` 调出console，并输入下面的代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request,os; pf = <span class="string">'Package Control.sublime-package'</span>; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), <span class="string">'wb'</span>).write(urllib.request.urlopen( <span class="string">'http://sublime.wbond.net/'</span> + pf.replace(<span class="string">' '</span>,<span class="string">'%20'</span>)).read())</span><br></pre></td></tr></table></figure>
-<h2 id="常用快捷键"><a href="#常用快捷键" class="headerlink" title="常用快捷键"></a>常用快捷键</h2><ul>
-<li>Ctrl+N：新建文件</li>
-<li>Ctrl+Shift+L：列编辑<br>首先选中要编辑的所有列，摁下 Ctrl+Shirt+L 进行列编辑。</li>
-<li>Ctrl+J：将选中的多行合并为一行</li>
-<li><p>Ctrl + P</p>
+<h2 id="在Termnal中，将ISO镜像转换为DMG格式"><a href="#在Termnal中，将ISO镜像转换为DMG格式" class="headerlink" title="在Termnal中，将ISO镜像转换为DMG格式"></a>在Termnal中，将ISO镜像转换为DMG格式</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hdiutil convert -format UDRW -o ~/linux.dmg /tmp/linux.iso</span><br></pre></td></tr></table></figure>
 <ul>
-<li>@ + sysmbol : 调到symbol所在位置</li>
-<li># + key_word : 调到keyword所在位置</li>
-<li>: + line_num : 调到line_num所在行</li>
+<li>也可以使用“磁盘工具”来转换为可读写的DMG镜像*</li>
 </ul>
-</li>
-<li><p>Ctrl+Enter：在当前行下面新增加一行，并跳转到该行</p>
-</li>
-<li>Ctrl+Shift+Enter：在当前行上面增加一行，并跳转到该行</li>
+<h2 id="插入USB盘，然后在终端下，查找该盘的设备名"><a href="#插入USB盘，然后在终端下，查找该盘的设备名" class="headerlink" title="插入USB盘，然后在终端下，查找该盘的设备名"></a>插入USB盘，然后在终端下，查找该盘的设备名</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ diskutil list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/dev/disk0</span><br><span class="line">  <span class="comment">#:                      TYPE NAME                    SIZE      IDENTIFIER</span></span><br><span class="line">  0:      GUID_partition_scheme                        *121.3 GB  disk0</span><br><span class="line">  1:                        EFI                        209.7 MB  disk0s1</span><br><span class="line">  2:                  Apple_HFS Macintosh HD            120.5 GB  disk0s2</span><br><span class="line">  3:                Apple_Boot Recovery HD            650.0 MB  disk0s3</span><br><span class="line">/dev/disk1</span><br><span class="line">  <span class="comment">#:                      TYPE NAME                    SIZE      IDENTIFIER</span></span><br><span class="line">  0:    FDisk_partition_scheme                        *15.8 GB    disk1</span><br><span class="line">  1:              Windows_NTFS wxy-u3                  15.8 GB    disk1s1</span><br></pre></td></tr></table></figure>
+<p>以上显示该盘的设备名是： /dev/disk1</p>
+<p><em>也可以通过“磁盘工具”里面选择磁盘（不是分区），来查看其信息，获得设备名</em></p>
+<h2 id="卸载USB盘（插入时已经自动挂载了），但是不要推出。在终端下："><a href="#卸载USB盘（插入时已经自动挂载了），但是不要推出。在终端下：" class="headerlink" title="卸载USB盘（插入时已经自动挂载了），但是不要推出。在终端下："></a>卸载USB盘（插入时已经自动挂载了），但是不要推出。在终端下：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ diskutil umountDisk /dev/disk1</span><br><span class="line">Unmount of all volumes on disk1 was successful</span><br></pre></td></tr></table></figure>
+<p><em>也可以通过“磁盘工具”进行卸载</em></p>
+<h2 id="镜像上面生成的DMG内容到USB盘，在终端下"><a href="#镜像上面生成的DMG内容到USB盘，在终端下" class="headerlink" title="镜像上面生成的DMG内容到USB盘，在终端下"></a>镜像上面生成的DMG内容到USB盘，在终端下</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dd <span class="keyword">if</span>=linux.dmg of=/dev/rdisk1 bs=1m</span><br><span class="line">Password:</span><br><span class="line">2151+1 records <span class="keyword">in</span></span><br><span class="line">2151+1 records out</span><br><span class="line">2256076800 bytes transferred <span class="keyword">in</span> 90.277905 secs (24990354 bytes/sec)</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li><strong><em>此处要千万注意，指定的of别写错了，否则悔之晚矣。</em></strong></li>
+<li>of参数指定的设备名，可以用上面找到的/dev/disk1，也可以用/dev/rdisk1，此处的“r”据说会写入较快。</li>
+<li>如果报错：“dd: Invalid number `1m’”，可能是使用的不同版本的dd，可以换为bs=1M试试。</li>
+<li>如果报错：“dd: /dev/diskN: Resource busy”，可能是上面的步骤中没有完成卸载USB盘。</li>
 </ul>
-<h2 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h2><h3 id="common"><a href="#common" class="headerlink" title="common"></a>common</h3><ul>
-<li>SideBarFolders</li>
-<li>SideBarEnhancements</li>
-<li>Terminal</li>
-</ul>
-<h3 id="MarkDown"><a href="#MarkDown" class="headerlink" title="MarkDown"></a>MarkDown</h3><ul>
-<li>MarkDown Editing</li>
-<li>MarkDown Preview</li>
-</ul>
-<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><ul>
-<li>Python PEP8 Autoformat<br><code>Ctrl+Shift+r : format</code></li>
-</ul>
+<h2 id="退出USB盘"><a href="#退出USB盘" class="headerlink" title="退出USB盘"></a>退出USB盘</h2><p>在上面复制之后，系统可能会报错，<strong>“此电脑不难读取能插入的磁盘”</strong>，不必理会，直接推出即可。也可以在终端下推出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ diskutil eject /dev/disk1</span><br></pre></td></tr></table></figure>
+<p><em>或者在“磁盘工具”里面推出</em></p>
 
       
     </div>
@@ -348,17 +335,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/12/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2016/04/12/Sublime Text 3 使用心得/" rel="next" title="Sublime Text 3 使用心得">
+                <i class="fa fa-chevron-left"></i> Sublime Text 3 使用心得
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/04/13/在MAC中制作linux启动U盘/" rel="prev" title="在MAC中制作linux启动U盘">
-                在MAC中制作linux启动U盘 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -384,8 +367,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/04/12/Sublime Text 3 使用心得/"
-           data-title="Sublime Text 3 使用心得" data-url="http://yoursite.com/2016/04/12/Sublime Text 3 使用心得/">
+      <div class="ds-thread" data-thread-key="2016/04/13/在MAC中制作linux启动U盘/"
+           data-title="在MAC中制作linux启动U盘" data-url="http://yoursite.com/2016/04/13/在MAC中制作linux启动U盘/">
       </div>
     
   </div>
@@ -492,7 +475,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">1.</span> <span class="nav-text">参考文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装插件"><span class="nav-number">2.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用快捷键"><span class="nav-number">3.</span> <span class="nav-text">常用快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用插件"><span class="nav-number">4.</span> <span class="nav-text">常用插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#common"><span class="nav-number">4.1.</span> <span class="nav-text">common</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MarkDown"><span class="nav-number">4.2.</span> <span class="nav-text">MarkDown</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python"><span class="nav-number">4.3.</span> <span class="nav-text">Python</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#在Termnal中，将ISO镜像转换为DMG格式"><span class="nav-number">1.</span> <span class="nav-text">在Termnal中，将ISO镜像转换为DMG格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入USB盘，然后在终端下，查找该盘的设备名"><span class="nav-number">2.</span> <span class="nav-text">插入USB盘，然后在终端下，查找该盘的设备名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卸载USB盘（插入时已经自动挂载了），但是不要推出。在终端下："><span class="nav-number">3.</span> <span class="nav-text">卸载USB盘（插入时已经自动挂载了），但是不要推出。在终端下：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像上面生成的DMG内容到USB盘，在终端下"><span class="nav-number">4.</span> <span class="nav-text">镜像上面生成的DMG内容到USB盘，在终端下</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#退出USB盘"><span class="nav-number">5.</span> <span class="nav-text">退出USB盘</span></a></li></ol></div>
             
           </div>
         </section>
