@@ -1,0 +1,650 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="新浪微博 Android SDK 为开发者提供了 Oauth2.0授权认证，并集成SSO登录功能，使第三方应用无需了解复杂的验证机制即可迚行授权登录操作,并提供微博分享功能,第三方应用可直接通过微博客户端迚行分享。本文将总结在Android开发中，如何使用Weibo SDK进行SSO授权登录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Android中使用新浪微博授权登录">
+<meta property="og:url" content="http://yoursite.com/2016/05/11/在Android中使用新浪微博授权登录/index.html">
+<meta property="og:site_name" content="Lemon Soda">
+<meta property="og:description" content="新浪微博 Android SDK 为开发者提供了 Oauth2.0授权认证，并集成SSO登录功能，使第三方应用无需了解复杂的验证机制即可迚行授权登录操作,并提供微博分享功能,第三方应用可直接通过微博客户端迚行分享。本文将总结在Android开发中，如何使用Weibo SDK进行SSO授权登录。">
+<meta property="og:image" content="http://yoursite.com/img/weibo_app_info.png">
+<meta property="og:image" content="http://yoursite.com/img/weibo_app_structure.png">
+<meta property="og:image" content="http://yoursite.com/img/weibo_java_structure.png">
+<meta property="og:updated_time" content="2016-05-11T12:36:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在Android中使用新浪微博授权登录">
+<meta name="twitter:description" content="新浪微博 Android SDK 为开发者提供了 Oauth2.0授权认证，并集成SSO登录功能，使第三方应用无需了解复杂的验证机制即可迚行授权登录操作,并提供微博分享功能,第三方应用可直接通过微博客户端迚行分享。本文将总结在Android开发中，如何使用Weibo SDK进行SSO授权登录。">
+<meta name="twitter:image" content="http://yoursite.com/img/weibo_app_info.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 在Android中使用新浪微博授权登录 | Lemon Soda </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lemon Soda</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                在Android中使用新浪微博授权登录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-11T14:03:05+08:00" content="2016-05-11">
+              2016-05-11
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/05/11/在Android中使用新浪微博授权登录/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/11/在Android中使用新浪微博授权登录/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>新浪微博 Android SDK 为开发者提供了 Oauth2.0授权认证，并集成SSO登录功能，使第三方应用无需了解复杂的验证机制即可迚行授权登录操作,并提供微博分享功能,第三方应用可直接通过微博客户端迚行分享。<br>本文将总结在Android开发中，如何使用Weibo SDK进行SSO授权登录。</p>
+<a id="more"></a>
+<h2 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h2><hr>
+<ul>
+<li>本实例基于 <a href="https://github.com/mobileresearch/weibo_android_sdk" target="_blank" rel="external">weibo_andorid_sdk on Github</a> 中的 example。仅包含使用 SSO＋Web 方式授权登录的部分。</li>
+<li>在<a href="https://github.com/mobileresearch/weibo_android_sdk" target="_blank" rel="external">weibo_andorid_sdk on Github</a> 中包含 Weibo SDK 文档，有更加详细的内容。</li>
+<li>本文程序可以从<a href="https://github.com/lichuan0217/WeiboLoginDemo" target="_blank" rel="external">Github: WeiboLoginDemo</a>中获得。</li>
+<li>需要集成 Weibo SDK 的android应用名称为：WeiboLoginDemo</li>
+<li>创建的微博开发平台应用名称为： LoginDemo4Chuanl</li>
+</ul>
+<h2 id="应用注册"><a href="#应用注册" class="headerlink" title="应用注册"></a>应用注册</h2><hr>
+<h3 id="创建应用"><a href="#创建应用" class="headerlink" title="创建应用"></a>创建应用</h3><ul>
+<li>在<a href="http://open.weibo.com/" target="_blank" rel="external">微博开发平台</a>中选择<em>移动应用</em></li>
+<li>选择<em>移动接入</em></li>
+<li>填写应用名称，选择应用平台（android），点击创建，完成创建过程。</li>
+</ul>
+<h3 id="应用信息"><a href="#应用信息" class="headerlink" title="应用信息"></a>应用信息</h3><p>在创建完成之后，将进入<em>应用基本信息</em>表单。</p>
+<p><img src="/img/weibo_app_info.png" alt="应用基本信息"></p>
+<h4 id="获取Android-签名"><a href="#获取Android-签名" class="headerlink" title="获取Android 签名"></a>获取Android 签名</h4><p>其中需要注意的是 <em>Android包名</em> 以及 <em>Android签名</em>.<br>Android 包名：填写自己应用的package name.<br>Android 签名：使用 Weibo SDK 提供的<em>签名工具</em>生成。</p>
+<h5 id="Clone-weibo-android-sdk"><a href="#Clone-weibo-android-sdk" class="headerlink" title="Clone weibo_android_sdk"></a>Clone weibo_android_sdk</h5><p>从Github上clone <a href="https://github.com/mobileresearch/weibo_android_sdk" target="_blank" rel="external">weibo_android_sdk</a>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/mobileresearch/weibo_android_sdk.git</span><br></pre></td></tr></table></figure>
+<p>其中包含文档，demo，签名工具（app_signatures.apk）等。</p>
+<h5 id="安装签名工具"><a href="#安装签名工具" class="headerlink" title="安装签名工具"></a>安装签名工具</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ adb install app_signatures.apk</span><br></pre></td></tr></table></figure>
+<h5 id="获取Android签名"><a href="#获取Android签名" class="headerlink" title="获取Android签名"></a>获取Android签名</h5><p>在手机中打开刚刚安装的“MD5签名生成器”，输入应用的包名，并点击生成。</p>
+<p><strong><em>Note:</em></strong> 在生成签名前，必须已经安装”WeiboLoginDemo”应用。同时”WeiboLoginDemo”必须已经签名，如果不签名，会导致程序可以运行，但是无法授权的问题。</p>
+<h3 id="应用高级信息"><a href="#应用高级信息" class="headerlink" title="应用高级信息"></a>应用高级信息</h3><p>编辑 <em>授权回调页</em> 与 <em>取消授权回调页</em>，都设置为 <em><a href="https://api.weibo.com/oauth2/default.html" target="_blank" rel="external">https://api.weibo.com/oauth2/default.html</a></em>.</p>
+<h2 id="Studio-集成-Weibo-SDK"><a href="#Studio-集成-Weibo-SDK" class="headerlink" title="Studio 集成 Weibo SDK"></a>Studio 集成 Weibo SDK</h2><hr>
+<p>WeiboLoginDemo 将使用 SSO+Web授权 方式，即如果手机上安装了微博客户端会默认发起SSO授权，反之则进行Web授权。</p>
+<h3 id="Project-Structure"><a href="#Project-Structure" class="headerlink" title="Project Structure"></a>Project Structure</h3><p><img src="/img/weibo_app_structure.png" alt="project structure"></p>
+<h3 id="加载-Weibo-SDK"><a href="#加载-Weibo-SDK" class="headerlink" title="加载 Weibo SDK"></a>加载 Weibo SDK</h3><p>将 weiboSDKCore_3.1.4.jar copy到 app/libs 中； 将 weibo_android_sdk/libs 下的文件 copy 到 app/libs中。<br>在 app/build.gradle 中加入对 Weibo SDK 的引用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">apply plugin: <span class="string">'com.android.application'</span></span><br><span class="line"></span><br><span class="line">android &#123;</span><br><span class="line">    signingConfigs &#123;</span><br><span class="line">        config &#123;</span><br><span class="line">            keyAlias <span class="string">'....'</span></span><br><span class="line">            keyPassword ......</span><br><span class="line">            storeFile file(<span class="string">'.....'</span>)</span><br><span class="line">            storePassword <span class="string">'.....'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    compileSdkVersion 23</span><br><span class="line">    buildToolsVersion <span class="string">"23.0.3"</span></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        applicationId <span class="string">"lemonsoda.top.demos"</span></span><br><span class="line">        minSdkVersion 15</span><br><span class="line">        targetSdkVersion 23</span><br><span class="line">        versionCode 1</span><br><span class="line">        versionName <span class="string">"1.0"</span></span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled <span class="literal">false</span></span><br><span class="line">            proguardFiles getDefaultProguardFile(<span class="string">'proguard-android.txt'</span>), <span class="string">'proguard-rules.pro'</span></span><br><span class="line">        &#125;</span><br><span class="line">        debug &#123;</span><br><span class="line">            signingConfig signingConfigs.config</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">source</span>Sets &#123;</span><br><span class="line">        main &#123;</span><br><span class="line">            jniLibs.srcDirs = [<span class="string">'libs'</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile fileTree(include: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)</span><br><span class="line">    compile files(<span class="string">'libs/weiboSDKCore_3.1.4.jar'</span>)</span><br><span class="line">    <span class="built_in">test</span>Compile <span class="string">'junit:junit:4.12'</span></span><br><span class="line">    compile <span class="string">'com.android.support:appcompat-v7:23.3.0'</span></span><br><span class="line">    compile <span class="string">'com.android.support:design:23.3.0'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于如何在Android Studio中加载.so文件，请参另一篇文章：<a href="http://lemonsoda.top/2016/05/11/Android-Studio%E5%8A%A0%E8%BD%BD-so%E6%96%87%E4%BB%B6/" target="_blank" rel="external">Android Studio加载.so文件</a></p>
+<h3 id="添加SDK所需要的权限"><a href="#添加SDK所需要的权限" class="headerlink" title="添加SDK所需要的权限"></a>添加SDK所需要的权限</h3><p>在 AndroidMainfest.xml 中加入</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_WIFI_STATE"</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="添加Web授权Activity"><a href="#添加Web授权Activity" class="headerlink" title="添加Web授权Activity"></a>添加Web授权Activity</h3><p>在 AndroidMainfest.xml中，在<application>中加入</application></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 必须注册在微博授权，分享微博时候用到 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">"com.sina.weibo.sdk.component.WeiboSdkBrowser"</span></span><br><span class="line">          <span class="attr">android:configChanges</span>=<span class="string">"keyboardHidden|orientation"</span></span><br><span class="line">          <span class="attr">android:windowSoftInputMode</span>=<span class="string">"adjustResize"</span></span><br><span class="line">          <span class="attr">android:exported</span>=<span class="string">"false"</span> &gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="注册-Weibo-SSO-Web-Auth"><a href="#注册-Weibo-SSO-Web-Auth" class="headerlink" title="注册 Weibo SSO+Web Auth"></a>注册 Weibo SSO+Web Auth</h3><p>程序结构：<br><img src="/img/weibo_java_structure.png" alt="application_structure"></p>
+<h4 id="常量辅助类：Constant"><a href="#常量辅助类：Constant" class="headerlink" title="常量辅助类：Constant"></a>常量辅助类：Constant</h4><p>包含 APP_KEY, REDIRECT_URL, SCOPE.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> lemonsoda.top.weibologindemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Constant</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String APP_KEY = <span class="string">"3350052938"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String REDIRECT_URL = <span class="string">"https://api.weibo.com/oauth2/default.html"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SCOPE =</span><br><span class="line">            <span class="string">"email,direct_messages_read,direct_messages_write,"</span></span><br><span class="line">                    + <span class="string">"friendships_groups_read,friendships_groups_write,statuses_to_me_read,"</span></span><br><span class="line">                    + <span class="string">"follow_app_official_microblog,"</span> + <span class="string">"invitation_write"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="存储辅助类：AccessTokenKeeper"><a href="#存储辅助类：AccessTokenKeeper" class="headerlink" title="存储辅助类：AccessTokenKeeper"></a>存储辅助类：AccessTokenKeeper</h4><p>将token 存储到 SharedPreferences 中.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> lemonsoda.top.weibologindemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.content.SharedPreferences;</span><br><span class="line"><span class="keyword">import</span> com.sina.weibo.sdk.auth.Oauth2AccessToken;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccessTokenKeeper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PREFERENCES_NAME = <span class="string">"com_weibo_sdk_android"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_UID           = <span class="string">"uid"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_ACCESS_TOKEN  = <span class="string">"access_token"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_EXPIRES_IN    = <span class="string">"expires_in"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_REFRESH_TOKEN    = <span class="string">"refresh_token"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 保存 Token 对象到 SharedPreferences。</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> context 应用程序上下文环境</span><br><span class="line">     * <span class="doctag">@param</span> token   Token 对象</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">writeAccessToken</span><span class="params">(Context context, Oauth2AccessToken token)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == context || <span class="keyword">null</span> == token) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);</span><br><span class="line">        SharedPreferences.Editor editor = pref.edit();</span><br><span class="line">        editor.putString(KEY_UID, token.getUid());</span><br><span class="line">        editor.putString(KEY_ACCESS_TOKEN, token.getToken());</span><br><span class="line">        editor.putString(KEY_REFRESH_TOKEN, token.getRefreshToken());</span><br><span class="line">        editor.putLong(KEY_EXPIRES_IN, token.getExpiresTime());</span><br><span class="line">        editor.commit();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 从 SharedPreferences 读取 Token 信息。</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> context 应用程序上下文环境</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@return</span> 返回 Token 对象</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Oauth2AccessToken <span class="title">readAccessToken</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == context) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Oauth2AccessToken token = <span class="keyword">new</span> Oauth2AccessToken();</span><br><span class="line">        SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);</span><br><span class="line">        token.setUid(pref.getString(KEY_UID, <span class="string">""</span>));</span><br><span class="line">        token.setToken(pref.getString(KEY_ACCESS_TOKEN, <span class="string">""</span>));</span><br><span class="line">        token.setRefreshToken(pref.getString(KEY_REFRESH_TOKEN, <span class="string">""</span>));</span><br><span class="line">        token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> token;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 清空 SharedPreferences 中 Token信息。</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> context 应用程序上下文环境</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == context) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);</span><br><span class="line">        SharedPreferences.Editor editor = pref.edit();</span><br><span class="line">        editor.clear();</span><br><span class="line">        editor.commit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="创建微博授权类，注册Auth请求回调：-MainActivity-javav"><a href="#创建微博授权类，注册Auth请求回调：-MainActivity-javav" class="headerlink" title="创建微博授权类，注册Auth请求回调： MainActivity.javav"></a>创建微博授权类，注册Auth请求回调： MainActivity.javav</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> lemonsoda.top.weibologindemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.content.Intent;</span><br><span class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"><span class="keyword">import</span> android.text.TextUtils;</span><br><span class="line"><span class="keyword">import</span> android.view.View;</span><br><span class="line"><span class="keyword">import</span> android.widget.Button;</span><br><span class="line"><span class="keyword">import</span> android.widget.TextView;</span><br><span class="line"><span class="keyword">import</span> android.widget.Toast;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sina.weibo.sdk.auth.AuthInfo;</span><br><span class="line"><span class="keyword">import</span> com.sina.weibo.sdk.auth.Oauth2AccessToken;</span><br><span class="line"><span class="keyword">import</span> com.sina.weibo.sdk.auth.WeiboAuthListener;</span><br><span class="line"><span class="keyword">import</span> com.sina.weibo.sdk.auth.sso.SsoHandler;</span><br><span class="line"><span class="keyword">import</span> com.sina.weibo.sdk.exception.WeiboException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> TextView mTokenText;</span><br><span class="line">    <span class="keyword">private</span> Button mLoginButton;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AuthInfo mAuthInfo;</span><br><span class="line">    <span class="keyword">private</span> Oauth2AccessToken mAccessToken;</span><br><span class="line">    <span class="keyword">private</span> SsoHandler mSsoHandler;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        mTokenText = (TextView)findViewById(R.id.tv_info);</span><br><span class="line">        mLoginButton = (Button)findViewById(R.id.btn_login);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建微博授权类对象,并将应用信息传入</span></span><br><span class="line">        mAuthInfo = <span class="keyword">new</span> AuthInfo(<span class="keyword">this</span>, Constant.APP_KEY, Constant.REDIRECT_URL, Constant.SCOPE);</span><br><span class="line">        mSsoHandler = <span class="keyword">new</span> SsoHandler(MainActivity.<span class="keyword">this</span>, mAuthInfo);</span><br><span class="line"></span><br><span class="line">        mLoginButton.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                mSsoHandler.authorize(<span class="keyword">new</span> AuthListener());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mAccessToken = AccessTokenKeeper.readAccessToken(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">if</span> (mAccessToken.isSessionValid()) &#123;</span><br><span class="line">            updateTokenView(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 当 SSO 授权 Activity 退出时，该函数被调用。</span><br><span class="line">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// SSO 授权回调</span></span><br><span class="line">        <span class="comment">// 重要：发起 SSO 登陆的 Activity 必须重写 onActivityResults</span></span><br><span class="line">        <span class="keyword">if</span> (mSsoHandler != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mSsoHandler.authorizeCallBack(requestCode, resultCode, data);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 微博认证授权回调类。</span><br><span class="line">     * 1. SSO 授权时，需要在 &#123;<span class="doctag">@link</span> #onActivityResult&#125; 中调用 &#123;<span class="doctag">@link</span> SsoHandler#authorizeCallBack&#125; 后，</span><br><span class="line">     *    该回调才会被执行。</span><br><span class="line">     * 2. 非 SSO 授权时，当授权结束后，该回调就会被执行。</span><br><span class="line">     * 当授权成功后，请保存该 access_token、expires_in、uid 等信息到 SharedPreferences 中。</span><br><span class="line">     */</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">AuthListener</span> <span class="keyword">implements</span> <span class="title">WeiboAuthListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">(Bundle values)</span> </span>&#123;</span><br><span class="line">            mAccessToken = Oauth2AccessToken.parseAccessToken(values);</span><br><span class="line">            String  phoneNum =  mAccessToken.getPhoneNum();</span><br><span class="line">            <span class="keyword">if</span> (mAccessToken.isSessionValid()) &#123;</span><br><span class="line">                <span class="comment">// 显示 Token</span></span><br><span class="line">                updateTokenView(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 保存 Token 到 SharedPreferences</span></span><br><span class="line">                AccessTokenKeeper.writeAccessToken(MainActivity.<span class="keyword">this</span>, mAccessToken);</span><br><span class="line">                Toast.makeText(MainActivity.<span class="keyword">this</span>,</span><br><span class="line">                        <span class="string">"success!!!"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 以下几种情况，您会收到 Code：</span></span><br><span class="line">                <span class="comment">// 1. 当您未在平台上注册的应用程序的包名与签名时；</span></span><br><span class="line">                <span class="comment">// 2. 当您注册的应用程序包名与签名不正确时；</span></span><br><span class="line">                <span class="comment">// 3. 当您在平台上注册的包名和签名与您当前测试的应用的包名和签名不匹配时。</span></span><br><span class="line">                String code = values.getString(<span class="string">"code"</span>);</span><br><span class="line">                String message = <span class="string">"Auth Failed."</span>;</span><br><span class="line">                <span class="keyword">if</span> (!TextUtils.isEmpty(code)) &#123;</span><br><span class="line">                    message = message + <span class="string">"\nObtained the code: "</span> + code;</span><br><span class="line">                &#125;</span><br><span class="line">                Toast.makeText(MainActivity.<span class="keyword">this</span>, message, Toast.LENGTH_LONG).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onWeiboException</span><span class="params">(WeiboException e)</span> </span>&#123;</span><br><span class="line">            Toast.makeText(MainActivity.<span class="keyword">this</span>,</span><br><span class="line">                    <span class="string">"Auth exception : "</span> + e.getMessage(), Toast.LENGTH_LONG).show();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            Toast.makeText(MainActivity.<span class="keyword">this</span>,</span><br><span class="line">                    <span class="string">"Auth Cancel..."</span>, Toast.LENGTH_LONG).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateTokenView</span><span class="params">(<span class="keyword">boolean</span> hasExisted)</span> </span>&#123;</span><br><span class="line">        String date = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy/MM/dd HH:mm:ss"</span>).format(</span><br><span class="line">                <span class="keyword">new</span> java.util.Date(mAccessToken.getExpiresTime()));</span><br><span class="line">        String format = getString(R.string.weibosdk_demo_token_to_string_format_1);</span><br><span class="line">        mTokenText.setText(String.format(format, mAccessToken.getToken(), date));</span><br><span class="line"></span><br><span class="line">        String message = String.format(format, mAccessToken.getToken(), date);</span><br><span class="line">        <span class="keyword">if</span> (hasExisted) &#123;</span><br><span class="line">            message = getString(R.string.weibosdk_demo_token_has_existed) + <span class="string">"\n"</span> + message;</span><br><span class="line">        &#125;</span><br><span class="line">        mTokenText.setText(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/11/Android-Studio加载-so文件/" rel="next" title="Android Studio加载.so文件">
+                <i class="fa fa-chevron-left"></i> Android Studio加载.so文件
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/05/11/在Android中使用新浪微博授权登录/"
+           data-title="在Android中使用新浪微博授权登录" data-url="http://yoursite.com/2016/05/11/在Android中使用新浪微博授权登录/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/avatar.jpg"
+               alt="胖子枪迷" />
+          <p class="site-author-name" itemprop="name">胖子枪迷</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lichuan0217" target="_blank" title="github">
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1638867730" target="_blank" title="weibo">
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/li-chuan-45" target="_blank" title="zhihu">
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提"><span class="nav-number">1.</span> <span class="nav-text">前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用注册"><span class="nav-number">2.</span> <span class="nav-text">应用注册</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建应用"><span class="nav-number">2.1.</span> <span class="nav-text">创建应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用信息"><span class="nav-number">2.2.</span> <span class="nav-text">应用信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取Android-签名"><span class="nav-number">2.2.1.</span> <span class="nav-text">获取Android 签名</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Clone-weibo-android-sdk"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Clone weibo_android_sdk</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装签名工具"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">安装签名工具</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#获取Android签名"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">获取Android签名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用高级信息"><span class="nav-number">2.3.</span> <span class="nav-text">应用高级信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Studio-集成-Weibo-SDK"><span class="nav-number">3.</span> <span class="nav-text">Studio 集成 Weibo SDK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Project-Structure"><span class="nav-number">3.1.</span> <span class="nav-text">Project Structure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载-Weibo-SDK"><span class="nav-number">3.2.</span> <span class="nav-text">加载 Weibo SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加SDK所需要的权限"><span class="nav-number">3.3.</span> <span class="nav-text">添加SDK所需要的权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加Web授权Activity"><span class="nav-number">3.4.</span> <span class="nav-text">添加Web授权Activity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册-Weibo-SSO-Web-Auth"><span class="nav-number">3.5.</span> <span class="nav-text">注册 Weibo SSO+Web Auth</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#常量辅助类：Constant"><span class="nav-number">3.5.1.</span> <span class="nav-text">常量辅助类：Constant</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储辅助类：AccessTokenKeeper"><span class="nav-number">3.5.2.</span> <span class="nav-text">存储辅助类：AccessTokenKeeper</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建微博授权类，注册Auth请求回调：-MainActivity-javav"><span class="nav-number">3.5.3.</span> <span class="nav-text">创建微博授权类，注册Auth请求回调： MainActivity.javav</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">胖子枪迷</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lemonsoda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
