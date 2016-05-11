@@ -64,7 +64,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android,RxJava," />
 
 
 
@@ -80,16 +80,16 @@
 
 
 
-<meta name="description" content="美食, 枪迷, Android, Python, 胖子">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta name="description" content="RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava in Android(更新中)">
+<meta property="og:url" content="http://yoursite.com/2016/04/22/RxJava-in-Android/index.html">
 <meta property="og:site_name" content="Lemon Soda">
-<meta property="og:description" content="美食, 枪迷, Android, Python, 胖子">
-<meta property="og:updated_time" content="2016-04-13T04:47:54.000Z">
+<meta property="og:description" content="RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.">
+<meta property="og:updated_time" content="2016-05-10T09:03:14.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="美食, 枪迷, Android, Python, 胖子">
+<meta name="twitter:title" content="RxJava in Android(更新中)">
+<meta name="twitter:description" content="RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.">
 
 
 
@@ -107,13 +107,7 @@
   };
 </script>
 
-  <title>
-  
-
-  
-    about | Lemon Soda
-  
-</title>
+  <title> RxJava in Android(更新中) | Lemon Soda </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +128,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -224,12 +218,145 @@
 
   <div id="posts" class="posts-expand">
     
-    
-      <blockquote>
-<p>美食, 枪迷, Android, Python, 胖子</p>
-</blockquote>
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                RxJava in Android(更新中)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-22T16:29:49+08:00" content="2016-04-22">
+              2016-04-22
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/22/RxJava-in-Android/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/22/RxJava-in-Android/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.
+</code></pre><a id="more"></a>
+<h2 id="What-is-RxJava"><a href="#What-is-RxJava" class="headerlink" title="What is RxJava"></a>What is RxJava</h2><p><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">官方Github定义</a>：</p>
+<pre><code>RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.
+</code></pre><p>RxJava是一个JVM库，通过这个库可以使用<strong>观察序列</strong>来编写<strong>异步</strong>的，<strong>基于事件</strong>的程序。</p>
+<h2 id="过滤Observables"><a href="#过滤Observables" class="headerlink" title="过滤Observables"></a>过滤Observables</h2><ul>
+<li><p>filter()</p>
+</li>
+<li><p>take(int N)<br>只发送序列前N个。</p>
+</li>
+<li><p>takeLast(int N)<br>只发送序列最后N个。<br>Note: 只能用在一个完整的，有限大小的序列。</p>
+</li>
+<li><p>distinct()<br>去掉序列中的重复项。<br>Note: 只能用在一个完整的，有限大小的序列；由于需要记录每一项，用于判断是否重复，因此需要注意内存大小。</p>
+</li>
+</ul>
+<p>－ distinctUntilChanged()<br>只有序列中数据变化时才发送数据。</p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/RxJava/" rel="tag">#RxJava</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/21/JPush-Android客户端集成/" rel="next" title="JPush Android客户端集成(更新中)">
+                <i class="fa fa-chevron-left"></i> JPush Android客户端集成(更新中)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/11/Android-Studio加载-so文件/" rel="prev" title="Android Studio加载.so文件">
+                Android Studio加载.so文件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -238,6 +365,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/22/RxJava-in-Android/"
+           data-title="RxJava in Android(更新中)" data-url="http://yoursite.com/2016/04/22/RxJava-in-Android/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -257,8 +392,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/avatar.jpg"
@@ -324,6 +468,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-RxJava"><span class="nav-number">1.</span> <span class="nav-text">What is RxJava</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤Observables"><span class="nav-number">2.</span> <span class="nav-text">过滤Observables</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -420,6 +575,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
