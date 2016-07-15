@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/04/22/RxJava-in-Android/index.html">
 <meta property="og:site_name" content="Lemon Soda">
 <meta property="og:description" content="RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.">
-<meta property="og:updated_time" content="2016-05-10T09:03:14.000Z">
+<meta property="og:updated_time" content="2016-06-06T08:20:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava in Android(更新中)">
 <meta name="twitter:description" content="RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.">
@@ -300,6 +300,8 @@
 </li>
 </ul>
 <p>－ distinctUntilChanged()<br>只有序列中数据变化时才发送数据。</p>
+<h2 id="Problems"><a href="#Problems" class="headerlink" title="Problems"></a>Problems</h2><h3 id="Subscriber-是否可以重用"><a href="#Subscriber-是否可以重用" class="headerlink" title="Subscriber 是否可以重用?"></a>Subscriber 是否可以重用?</h3><p><strong>Subscriber 是不可以重用的</strong>。这是因为 Subscriber 实现了 Subscription 接口，而在 Subscription 中包含 isUnsubscribed 变量。如果 isUnsubscribed 被设置为 true， 将永远不能转变为 false。</p>
+<p>但是，可以使用 Observer 代替 Subscriber，<strong>Observer是可以重用的</strong>。 在Observer中不包含任何 subscription status。每次将 Observer 赋给一个 Observable 时，Rxjava会新建一个Subscriber 包装 Observer， 因此可以重用。</p>
 
       
     </div>
@@ -413,7 +415,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">9</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -423,7 +425,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -475,7 +477,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-RxJava"><span class="nav-number">1.</span> <span class="nav-text">What is RxJava</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤Observables"><span class="nav-number">2.</span> <span class="nav-text">过滤Observables</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-RxJava"><span class="nav-number">1.</span> <span class="nav-text">What is RxJava</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤Observables"><span class="nav-number">2.</span> <span class="nav-text">过滤Observables</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problems"><span class="nav-number">3.</span> <span class="nav-text">Problems</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Subscriber-是否可以重用"><span class="nav-number">3.1.</span> <span class="nav-text">Subscriber 是否可以重用?</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
