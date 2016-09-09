@@ -1,0 +1,801 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,LightDM," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="In this post, I wll introduct the authentication process when using LightDM GTK+ Greeter in Ubuntu 14.04.The main content includes:
+
+LightDM Configuration
+Greeter in Ubuntu 14.04 introduction and inst">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How LightDM work with greeter when authentication">
+<meta property="og:url" content="http://yoursite.com/2016/09/09/How-LightDM-work-with-greeter-when-authentication/index.html">
+<meta property="og:site_name" content="Lemon Soda">
+<meta property="og:description" content="In this post, I wll introduct the authentication process when using LightDM GTK+ Greeter in Ubuntu 14.04.The main content includes:
+
+LightDM Configuration
+Greeter in Ubuntu 14.04 introduction and inst">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_xsessions.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_xgreeters.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_gtk_greeter_source.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_source.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_gtk_greeter_ps.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_code_structure.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_gtk_greeter_code_structure.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_process_relationship.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_pipe_greeter.png">
+<meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_pipe_pam.png">
+<meta property="og:updated_time" content="2016-09-09T08:01:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How LightDM work with greeter when authentication">
+<meta name="twitter:description" content="In this post, I wll introduct the authentication process when using LightDM GTK+ Greeter in Ubuntu 14.04.The main content includes:
+
+LightDM Configuration
+Greeter in Ubuntu 14.04 introduction and inst">
+<meta name="twitter:image" content="http://yoursite.com/img/lightdm/lightdm_xsessions.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> How LightDM work with greeter when authentication | Lemon Soda </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lemon Soda</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                How LightDM work with greeter when authentication
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-09T15:51:07+08:00" content="2016-09-09">
+              2016-09-09
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/09/How-LightDM-work-with-greeter-when-authentication/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/09/How-LightDM-work-with-greeter-when-authentication/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>In this post, I wll introduct the authentication process when using LightDM GTK+ Greeter in Ubuntu 14.04.<br>The main content includes:</p>
+<ul>
+<li>LightDM Configuration</li>
+<li>Greeter in Ubuntu 14.04 introduction and installation</li>
+<li>Authentication process code analysis<a id="more"></a>
+</li>
+</ul>
+<h2 id="LightDM-configuration"><a href="#LightDM-configuration" class="headerlink" title="LightDM configuration"></a>LightDM configuration</h2><p>LightDM configuration is provided by the following files:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/usr/share/lightdm/lightdm.conf.d/*.conf</span><br><span class="line">/etc/lightdm/lightdm.conf.d/*.conf</span><br><span class="line">/etc/lightdm/lightdm.conf</span><br></pre></td></tr></table></figure>
+<p>Files are read in the above order and combined togeter to make the LightDM configuration.</p>
+<p>There is an additional config file:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/lightdm/users.conf</span><br></pre></td></tr></table></figure></p>
+<p>But this config file will be <strong>ignored</strong> if <code>accountsservice</code> is running on your system.<br>If you are unsure, check by command:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ps -aef |grep accountsservice</span><br></pre></td></tr></table></figure></p>
+<p><em>More configuration about LigthDM, you can refer <a href="https://wiki.ubuntu.com/LightDM" target="_blank" rel="external">LightDM wiki</a>.</em></p>
+<h3 id="Default-Session"><a href="#Default-Session" class="headerlink" title="Default Session"></a>Default Session</h3><p>The default session is set by configuration in <strong>/usr/share/lightdm/lightdm.conf.d/</strong> that session packages provide.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[SeatDefaults]</span><br><span class="line">user-session=ubuntu</span><br></pre></td></tr></table></figure>
+<p>Where <strong>ubuntu</strong> is the name of the session <code>.desktop</code> file from <strong>/usr/share/xsessions/*.desktop</strong>.</p>
+<p><img src="/img/lightdm/lightdm_xsessions.png" alt="xsseions list"></p>
+<h3 id="Default-Greeter"><a href="#Default-Greeter" class="headerlink" title="Default Greeter"></a>Default Greeter</h3><p>The greeter is set by configuration in <strong>/usr/share/lightdm/lightdm.conf.d/</strong> that greeter packages provide.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[SeatDefaults]</span><br><span class="line">greeter-session=lightdm-gtk-greeter</span><br></pre></td></tr></table></figure>
+<p>Where <strong>lightdm-gtk-greeter</strong> is the name of the greeter <code>.desktop</code> file from <strong>/usr/share/xgreeters/*.desktop</strong>.</p>
+<p><img src="/img/lightdm/lightdm_xgreeters.png" alt="xgreetes list"></p>
+<h2 id="Greeter"><a href="#Greeter" class="headerlink" title="Greeter"></a>Greeter</h2><p>The main greeters used in Ubuntu are:</p>
+<ul>
+<li>unity-greeter - Unity Greeter (Default)</li>
+<li>lightdm-gtk-greeter - simple display manager (GTK+ greeter)</li>
+<li>lightdm-kde-greeter - LightDM KDE greeter</li>
+<li>lightdm-webkit-greeter - LightDM Webkit Greeter</li>
+</ul>
+<h2 id="lightdm-gtk-greeter-preparation"><a href="#lightdm-gtk-greeter-preparation" class="headerlink" title="lightdm-gtk-greeter preparation"></a>lightdm-gtk-greeter preparation</h2><h3 id="Installation"><a href="#Installation" class="headerlink" title="Installation"></a>Installation</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo add-apt-repository ppa:lightdm-gtk-greeter-team/stable</span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install lightdm-gtk-greeter</span><br></pre></td></tr></table></figure>
+<p>In this way, you will install the lateset version of lightdm-gtk-greeter.</p>
+<p>If you just run:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install lightdm-gtk-greeter</span><br></pre></td></tr></table></figure>
+<p>You will install the corresponding version of lightdm-gtk-greeter to your Ubuntu version.</p>
+<p>Here we will use version <code>1.8.5-1ubuntu2~ubuntu14.04.1</code> to analysis gtk-greeter, which is not the latest version.</p>
+<h3 id="Download-source-code"><a href="#Download-source-code" class="headerlink" title="Download source code"></a>Download source code</h3><h4 id="lightdm-gtk-greeter"><a href="#lightdm-gtk-greeter" class="headerlink" title="lightdm-gtk-greeter"></a>lightdm-gtk-greeter</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get source lightdm-gtk-greeter</span><br></pre></td></tr></table></figure>
+<p><img src="/img/lightdm/lightdm_gtk_greeter_source.png" alt="gtk-greeter source code"></p>
+<p>In directory <strong>lightdm-gtk-greeter-1.8.5</strong>, you will find the source codes.</p>
+<h4 id="lightdm"><a href="#lightdm" class="headerlink" title="lightdm"></a>lightdm</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get source lightdm</span><br></pre></td></tr></table></figure>
+<p><img src="/img/lightdm/lightdm_source.png" alt="lightdm source code"></p>
+<h2 id="Code-analysis"><a href="#Code-analysis" class="headerlink" title="Code analysis"></a>Code analysis</h2><h3 id="Relationship-between-lightdm-and-greeter"><a href="#Relationship-between-lightdm-and-greeter" class="headerlink" title="Relationship between lightdm and greeter"></a>Relationship between lightdm and greeter</h3><p>Run command : <code>ps -ajxf</code></p>
+<p><img src="/img/lightdm/lightdm_gtk_greeter_ps.png" alt="ps"></p>
+<h3 id="Code-structure"><a href="#Code-structure" class="headerlink" title="Code structure"></a>Code structure</h3><ul>
+<li><p>LightDM<br><img src="/img/lightdm/lightdm_code_structure.png" alt="lightdm source code structure"></p>
+</li>
+<li><p>lightdm-gtk-greeter<br>The main and only code is <strong>lightdm-gtk-greeter.c</strong>.<br><img src="/img/lightdm/lightdm_gtk_greeter_code_structure.png" alt="source code structure"></p>
+</li>
+</ul>
+<h3 id="Interactive-method-between-greeter-and-lightdm"><a href="#Interactive-method-between-greeter-and-lightdm" class="headerlink" title="Interactive method between greeter and lightdm"></a>Interactive method between greeter and lightdm</h3><p>There are three main processes, they interact with each other via pipe.</p>
+<ul>
+<li>Greeter : users can select user and input password from this process.</li>
+<li>Greeter Daemon (lightdm) : receive credential information from greeter and send it to PAM authentication process.</li>
+<li>PAM authentication : recevie credential from greeter daemon, and interact with PAM module to authenticate user.</li>
+</ul>
+<p>Here is the relationship between these three processes:<br><img src="/img/lightdm/lightdm_process_relationship.png" alt="process relationship"></p>
+<h4 id="PIPE-between-greeter-and-greeter-daemon"><a href="#PIPE-between-greeter-and-greeter-daemon" class="headerlink" title="PIPE between greeter and greeter daemon"></a>PIPE between greeter and greeter daemon</h4><p><img src="/img/lightdm/lightdm_pipe_greeter.png" alt="greeter and deamon"></p>
+<h4 id="PIPE-between-greeter-daemon-and-child-session-PAM-authentication-process"><a href="#PIPE-between-greeter-daemon-and-child-session-PAM-authentication-process" class="headerlink" title="PIPE between greeter daemon and child session(PAM authentication process)"></a>PIPE between greeter daemon and child session(PAM authentication process)</h4><p><img src="/img/lightdm/lightdm_pipe_pam.png" alt="deamon and pam"></p>
+<h3 id="GTK-greeter-start-authentication"><a href="#GTK-greeter-start-authentication" class="headerlink" title="GTK-greeter start authentication"></a>GTK-greeter start authentication</h3><p>main():</p>
+<ul>
+<li>create greeter instance</li>
+<li>register callback for greeter</li>
+<li>load user list</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main</span></span><br><span class="line"><span class="function"><span class="keyword">int</span></span><br><span class="line"><span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">	......</span><br><span class="line">	<span class="comment">// Create greeter instance</span></span><br><span class="line">    greeter = lightdm_greeter_new ();</span><br><span class="line">	<span class="comment">// Set the callback of signal for greeter</span></span><br><span class="line">    g_signal_connect (greeter, <span class="string">"show-prompt"</span>, G_CALLBACK (show_prompt_cb), <span class="literal">NULL</span>);</span><br><span class="line">    g_signal_connect (greeter, <span class="string">"show-message"</span>, G_CALLBACK (show_message_cb), <span class="literal">NULL</span>);</span><br><span class="line">    g_signal_connect (greeter, <span class="string">"authentication-complete"</span>, G_CALLBACK (authentication_complete_cb), <span class="literal">NULL</span>);</span><br><span class="line">    g_signal_connect (greeter, <span class="string">"autologin-timer-expired"</span>, G_CALLBACK (lightdm_greeter_authenticate_autologin), <span class="literal">NULL</span>);</span><br><span class="line">    <span class="comment">// Connects the greeter to the display manager</span></span><br><span class="line">    <span class="keyword">if</span> (!lightdm_greeter_connect_sync (greeter, NULL))</span><br><span class="line">        return EXIT_FAILURE;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Load theme/language/menu/font....</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Load user list</span></span><br><span class="line">    load_user_list();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>load_user_list():</p>
+<ul>
+<li>Call lightdm api to get all users</li>
+<li>Select which user to display</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//load_user_list</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">load_user_list</span> <span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// call lightdm api to get all users</span></span><br><span class="line">	items = lightdm_user_list_get_users (lightdm_user_list_get_instance ());</span><br><span class="line"></span><br><span class="line">	<span class="comment">// check which user to select: maybe last_user/guest/*other</span></span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">// display the selected user</span></span><br><span class="line">	name = g_strdup(selected_user);</span><br><span class="line">    set_display_user(greeter, name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>set_display_user():</p>
+<ul>
+<li>Update UI to display the selected user</li>
+<li>start authentication for the selected user</li>
+</ul>
+<p>Depend on username, there are there types of user:</p>
+<ul>
+<li>*other : user needs to input username and password</li>
+<li>*guest : user will login system as guest</li>
+<li>username : user only need to input password</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">set_displayed_user</span> <span class="params">(LightDMGreeter *greeter, gchar *username)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// select the user type</span></span><br><span class="line">	<span class="keyword">if</span> (g_strcmp0 (username, <span class="string">"*other"</span>) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        gtk_widget_show (GTK_WIDGET (username_entry));</span><br><span class="line">        gtk_widget_show (GTK_WIDGET (cancel_button));</span><br><span class="line">        user_tooltip = g_strdup(_(<span class="string">"Other"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        gtk_widget_hide (GTK_WIDGET (username_entry));</span><br><span class="line">        gtk_widget_hide (GTK_WIDGET (cancel_button));</span><br><span class="line">        gtk_widget_grab_focus (GTK_WIDGET (password_entry));</span><br><span class="line">        user_tooltip = g_strdup(username);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (g_strcmp0 (username, <span class="string">"*guest"</span>) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        user_tooltip = g_strdup(_(<span class="string">"Guest Session"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// start authentication for selected user</span></span><br><span class="line">    start_authentication (username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>start_authentication ():</p>
+<ul>
+<li>call lightdm api to start authentication for selected user</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">start_authentication</span> <span class="params">(<span class="keyword">const</span> gchar *username)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (g_strcmp0 (username, <span class="string">"*other"</span>) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        lightdm_greeter_authenticate (greeter, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (g_strcmp0 (username, <span class="string">"*guest"</span>) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        username_setted = FALSE;</span><br><span class="line">        lightdm_greeter_authenticate_as_guest (greeter);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">    	lightdm_greeter_authenticate (greeter, username);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>So far, gtk-greeter has started authentication for one user. Next, we will analysis how lightdm authenticate this user.</p>
+<h3 id="LightDM-authenticate-user-process"><a href="#LightDM-authenticate-user-process" class="headerlink" title="LightDM authenticate user process"></a>LightDM authenticate user process</h3><p>In liblightdm-gobject/greeter.c<br>lightdm_greeter_authenticate():</p>
+<ul>
+<li>write message to greeter daemon with id “GREETER_MESSAGE_AUTHENTICATE” and username</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">lightdm_greeter_authenticate</span> <span class="params">(LightDMGreeter *greeter, <span class="keyword">const</span> gchar *username)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_AUTHENTICATE, int_length () + string_length (username), &amp;offset);</span><br><span class="line">    write_int (message, MAX_MESSAGE_LENGTH, priv-&gt;authenticate_sequence_number, &amp;offset);</span><br><span class="line">    write_string (message, MAX_MESSAGE_LENGTH, username, &amp;offset);</span><br><span class="line">    write_message (greeter, message, offset);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In src/greeter.c<br>read_cb():</p>
+<ul>
+<li>Depends on greeter id “GREETER_MESSAGE_AUTHENTICATE”, handle user login</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> gboolean</span><br><span class="line"><span class="title">read_cb</span> <span class="params">(GIOChannel *source, GIOCondition condition, gpointer data)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	id = read_int (greeter, &amp;offset);</span><br><span class="line">    <span class="keyword">switch</span> (id)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> GREETER_MESSAGE_AUTHENTICATE:</span><br><span class="line">        sequence_number = read_int (greeter, &amp;offset);</span><br><span class="line">        username = read_string (greeter, &amp;offset);</span><br><span class="line">        handle_login (greeter, sequence_number, username);</span><br><span class="line">        g_free (username);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In src/greeter.c<br>handle_login():</p>
+<ul>
+<li>create authencation session</li>
+<li>register callback for authencation session</li>
+<li>start session to interact with PAM</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">handle_login</span> <span class="params">(Greeter *greeter, guint32 sequence_number, <span class="keyword">const</span> gchar *username)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="comment">// create authentication session</span></span><br><span class="line">	g_signal_emit (greeter, signals[CREATE_SESSION], <span class="number">0</span>, &amp;greeter-&gt;priv-&gt;authentication_session);</span><br><span class="line">    .......</span><br><span class="line">    <span class="comment">// register callback for authentication session</span></span><br><span class="line">	g_signal_connect (G_OBJECT (greeter-&gt;priv-&gt;authentication_session), <span class="string">"got-messages"</span>, G_CALLBACK (pam_messages_cb), greeter);</span><br><span class="line">    g_signal_connect (G_OBJECT (greeter-&gt;priv-&gt;authentication_session), <span class="string">"authentication-complete"</span>, G_CALLBACK (authentication_complete_cb), greeter);</span><br><span class="line">	......</span><br><span class="line">	<span class="comment">/* Run the session process */</span></span><br><span class="line">    session_set_pam_service (greeter-&gt;priv-&gt;authentication_session, service);</span><br><span class="line">    session_set_username (greeter-&gt;priv-&gt;authentication_session, username);</span><br><span class="line">    session_set_do_authenticate (greeter-&gt;priv-&gt;authentication_session, TRUE);</span><br><span class="line">    session_set_is_interactive (greeter-&gt;priv-&gt;authentication_session, is_interactive);</span><br><span class="line">    session_start (greeter-&gt;priv-&gt;authentication_session);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In src/session.c<br>session_start() will call session_real_start()<br>session_real_start():</p>
+<ul>
+<li>create pipe for child process</li>
+<li>start <code>lightdm --session-child</code>.</li>
+<li>send pam-service/username and other configurations</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Create pipes to talk to the child */</span></span><br><span class="line">   <span class="keyword">if</span> (pipe (to_child_pipe) &lt; <span class="number">0</span> || pipe (from_child_pipe) &lt; <span class="number">0</span>)</span><br><span class="line">   &#123;</span><br><span class="line">       g_warning (<span class="string">"Failed to create pipe to communicate with session process: %s"</span>, strerror (errno));</span><br><span class="line">       return FALSE;</span><br><span class="line">   &#125;</span><br><span class="line">   ......</span><br><span class="line">   <span class="comment">/* Run the child */</span></span><br><span class="line">   arg0 = g_strdup_printf (<span class="string">"%d"</span>, to_child_output);</span><br><span class="line">   arg1 = g_strdup_printf (<span class="string">"%d"</span>, from_child_input);</span><br><span class="line">   session-&gt;priv-&gt;pid = fork ();</span><br><span class="line">   <span class="keyword">if</span> (session-&gt;priv-&gt;pid == <span class="number">0</span>)</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="comment">/* Run us again in session child mode */</span></span><br><span class="line">       execlp (<span class="string">"lightdm"</span>,</span><br><span class="line">               <span class="string">"lightdm"</span>,</span><br><span class="line">               <span class="string">"--session-child"</span>,</span><br><span class="line">               arg0, arg1, <span class="literal">NULL</span>);</span><br><span class="line">       _exit (EXIT_FAILURE);</span><br><span class="line">   &#125;</span><br><span class="line">   .......</span><br><span class="line">   <span class="comment">/* Send configuration */</span></span><br><span class="line">   write_string (session, session-&gt;priv-&gt;pam_service);</span><br><span class="line">   write_string (session, session-&gt;priv-&gt;username);</span><br><span class="line">   write_data (session, &amp;session-&gt;priv-&gt;do_authenticate, <span class="keyword">sizeof</span> (session-&gt;priv-&gt;do_authenticate));</span><br><span class="line">   write_data (session, &amp;session-&gt;priv-&gt;is_interactive, <span class="keyword">sizeof</span> (session-&gt;priv-&gt;is_interactive));</span><br><span class="line">   write_string (session, <span class="literal">NULL</span>); <span class="comment">/* Used to be class, now we just use the environment variable */</span></span><br><span class="line">   write_string (session, session-&gt;priv-&gt;tty);</span><br><span class="line">   write_string (session, session-&gt;priv-&gt;remote_host_name);</span><br><span class="line">   write_string (session, session-&gt;priv-&gt;xdisplay);</span><br><span class="line">   write_xauth (session, session-&gt;priv-&gt;x_authority);</span><br></pre></td></tr></table></figure>
+<p>In src/session-child.c<br><code>lightdm --session-child</code> will call <code>session_child_run()</code><br>session_child_run:</p>
+<ul>
+<li>read configurations: username / pam-service / ……</li>
+<li>start PAM</li>
+<li>start PAM authenticate</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span></span><br><span class="line"><span class="title">session_child_run</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">struct</span> pam_conv conversation = &#123; pam_conv_cb, <span class="literal">NULL</span> &#125;;</span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">// read configurations</span></span><br><span class="line">    <span class="comment">/* Read a version number so we can handle upgrades (i.e. a newer version of session child is run for an old daemon */</span></span><br><span class="line">    read_data (&amp;version, <span class="keyword">sizeof</span> (version));</span><br><span class="line"></span><br><span class="line">    service = read_string ();</span><br><span class="line">    username = read_string ();</span><br><span class="line">    read_data (&amp;do_authenticate, <span class="keyword">sizeof</span> (do_authenticate));</span><br><span class="line">    read_data (&amp;is_interactive, <span class="keyword">sizeof</span> (is_interactive));</span><br><span class="line">    read_string (); <span class="comment">/* Used to be class, now we just use the environment variable */</span></span><br><span class="line">    tty = read_string ();</span><br><span class="line">    remote_host_name = read_string ();</span><br><span class="line">    xdisplay = read_string ();</span><br><span class="line">    x_authority = read_xauth ();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Setup PAM */</span></span><br><span class="line">    result = pam_start (service, username, &amp;conversation, &amp;pam_handle);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Authenticate */</span></span><br><span class="line">    <span class="keyword">if</span> (do_authenticate)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">const</span> gchar *new_username;</span><br><span class="line"></span><br><span class="line">        authentication_result = pam_authenticate (pam_handle, <span class="number">0</span>);</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>So far, session-child has started to communicate with PAM module.</p>
+<p>After PAM module return message, <code>pam_conv_cb</code> in <code>session-child</code> will handle.<br>in src/session-child.c<br>pam_conv_cb():</p>
+<ul>
+<li>receive message from PAM module, and send it back to session</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line"><span class="title">pam_conv_cb</span> <span class="params">(<span class="keyword">int</span> msg_length, <span class="keyword">const</span> <span class="keyword">struct</span> pam_message **msg, <span class="keyword">struct</span> pam_response **resp, <span class="keyword">void</span> *app_data)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="comment">/* Check if we changed user */</span></span><br><span class="line">    pam_get_item (pam_handle, PAM_USER, (const void **) &amp;username);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Notify the daemon */</span></span><br><span class="line">    write_string (username);</span><br><span class="line">    write_data (&amp;auth_complete, <span class="keyword">sizeof</span> (auth_complete));</span><br><span class="line">    write_data (&amp;msg_length, <span class="keyword">sizeof</span> (msg_length));</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; msg_length; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">struct</span> pam_message *m = msg[i];</span><br><span class="line">        write_data (&amp;m-&gt;msg_style, <span class="keyword">sizeof</span> (m-&gt;msg_style));</span><br><span class="line">        write_string (m-&gt;msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In src/session.c<br>from_child_cb():</p>
+<ul>
+<li>read message from child session</li>
+<li>emit ‘got-message’ signal to greeter daemon</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> gboolean</span><br><span class="line"><span class="title">from_child_cb</span> <span class="params">(GIOChannel *source, GIOCondition condition, gpointer data)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	.......</span><br><span class="line">		read_from_child (session, &amp;session-&gt;priv-&gt;messages_length, <span class="keyword">sizeof</span> (session-&gt;priv-&gt;messages_length));</span><br><span class="line">        session-&gt;priv-&gt;messages = <span class="built_in">calloc</span> (session-&gt;priv-&gt;messages_length, sizeof (struct pam_message));</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; session-&gt;priv-&gt;messages_length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">struct</span> pam_message *m = &amp;session-&gt;priv-&gt;messages[i];</span><br><span class="line">            read_from_child (session, &amp;m-&gt;msg_style, <span class="keyword">sizeof</span> (m-&gt;msg_style));</span><br><span class="line">            m-&gt;msg = read_string_from_child (session);</span><br><span class="line">        &#125;</span><br><span class="line">        g_signal_emit (G_OBJECT (session), signals[GOT_MESSAGES], <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In src/greeter.c<br>pam_messages_cb():</p>
+<ul>
+<li>write message to greeter</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">pam_messages_cb</span> <span class="params">(Session *session, Greeter *greeter)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	messages = session_get_messages (session);</span><br><span class="line">    messages_length = session_get_messages_length (session);</span><br><span class="line"></span><br><span class="line">    write_header (message, MAX_MESSAGE_LENGTH, SERVER_MESSAGE_PROMPT_AUTHENTICATION, size, &amp;offset);</span><br><span class="line">    write_int (message, MAX_MESSAGE_LENGTH, greeter-&gt;priv-&gt;authentication_sequence_number, &amp;offset);</span><br><span class="line">    write_string (message, MAX_MESSAGE_LENGTH, session_get_username (session), &amp;offset);</span><br><span class="line">    write_int (message, MAX_MESSAGE_LENGTH, messages_length, &amp;offset);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; messages_length; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        write_int (message, MAX_MESSAGE_LENGTH, messages[i].msg_style, &amp;offset);</span><br><span class="line">        write_string (message, MAX_MESSAGE_LENGTH, messages[i].msg, &amp;offset);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (messages[i].msg_style == PAM_PROMPT_ECHO_OFF || messages[i].msg_style == PAM_PROMPT_ECHO_ON)</span><br><span class="line">            n_prompts++;</span><br><span class="line">    &#125;</span><br><span class="line">    write_message (greeter, message, offset);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In liblightdm-gobject/greeter.c:<br>from_server_cb():</p>
+<ul>
+<li>depends on message id “SERVER_MESSAGE_PROMPT_AUTHENTICATION”, handle prompt ahthentication</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> gboolean</span><br><span class="line"><span class="title">from_server_cb</span> <span class="params">(GIOChannel *source, GIOCondition condition, gpointer data)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	message = read_message (greeter, &amp;message_length, FALSE);</span><br><span class="line">    <span class="keyword">if</span> (!message)</span><br><span class="line">        return TRUE;</span><br><span class="line"></span><br><span class="line">    offset = <span class="number">0</span>;</span><br><span class="line">    id = read_int (message, message_length, &amp;offset);</span><br><span class="line">    read_int (message, message_length, &amp;offset);</span><br><span class="line">    <span class="keyword">switch</span> (id)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> SERVER_MESSAGE_PROMPT_AUTHENTICATION:</span><br><span class="line">        handle_prompt_authentication (greeter, message, message_length, &amp;offset);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    .....</span><br><span class="line">    &#125;</span><br><span class="line">    return TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In liblightdm-gobject/greeter.c:<br>handle_prompt_authentication():</p>
+<ul>
+<li>emit “SHOW_PROMPT” to greeter</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">handle_prompt_authentication</span> <span class="params">(LightDMGreeter *greeter, guint8 *message, gsize message_length, gsize *offset)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	n_messages = read_int (message, message_length, offset);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n_messages; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> style;</span><br><span class="line">        gchar *text;</span><br><span class="line"></span><br><span class="line">        style = read_int (message, message_length, offset);</span><br><span class="line">        text = read_string (message, message_length, offset);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// <span class="doctag">FIXME:</span> Should stop on prompts?</span></span><br><span class="line">        <span class="keyword">switch</span> (style)</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">case</span> PAM_PROMPT_ECHO_OFF:</span><br><span class="line">            priv-&gt;n_responses_waiting++;</span><br><span class="line">            g_signal_emit (G_OBJECT (greeter), signals[SHOW_PROMPT], <span class="number">0</span>, text, LIGHTDM_PROMPT_TYPE_SECRET);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> PAM_PROMPT_ECHO_ON:</span><br><span class="line">            priv-&gt;n_responses_waiting++;</span><br><span class="line">            g_signal_emit (G_OBJECT (greeter), signals[SHOW_PROMPT], <span class="number">0</span>, text, LIGHTDM_PROMPT_TYPE_QUESTION);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> PAM_ERROR_MSG:</span><br><span class="line">            g_signal_emit (G_OBJECT (greeter), signals[SHOW_MESSAGE], <span class="number">0</span>, text, LIGHTDM_MESSAGE_TYPE_ERROR);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> PAM_TEXT_INFO:</span><br><span class="line">            g_signal_emit (G_OBJECT (greeter), signals[SHOW_MESSAGE], <span class="number">0</span>, text, LIGHTDM_MESSAGE_TYPE_INFO);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        g_free (text);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>So far, LightDM has send signal to gtk-greeter to handle prompt.</p>
+<h3 id="GTK-greeter-handle-message-from-lightDM"><a href="#GTK-greeter-handle-message-from-lightDM" class="headerlink" title="GTK-greeter handle message from lightDM"></a>GTK-greeter handle message from lightDM</h3><p>show_prompt_cb():</p>
+<ul>
+<li>parse message and process prompt</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">show_prompt_cb</span> <span class="params">(LightDMGreeter *greeter, <span class="keyword">const</span> gchar *text, LightDMPromptType type)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PAMConversationMessage *message_obj = g_new (PAMConversationMessage, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (message_obj)</span><br><span class="line">    &#123;</span><br><span class="line">        message_obj-&gt;is_prompt = TRUE;</span><br><span class="line">        message_obj-&gt;type.prompt = type;</span><br><span class="line">        message_obj-&gt;text = g_strdup (text);</span><br><span class="line">        pending_questions = g_slist_append (pending_questions, message_obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!prompt_active) &#123;</span><br><span class="line">        process_prompts (greeter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>process_prompt():</p>
+<ul>
+<li>update UI to show prompt and wait uer to input password</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">process_prompts</span> <span class="params">(LightDMGreeter *greeter)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">......</span><br><span class="line">		gtk_entry_set_text (password_entry, <span class="string">""</span>);</span><br><span class="line">        gtk_entry_set_visibility (password_entry, message-&gt;type.prompt != LIGHTDM_PROMPT_TYPE_SECRET);</span><br><span class="line">......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>So far, gtk-greeter start authentication is done. GTK-greeter will wait user to input password.</p>
+<h3 id="GTK-greeter-parse-password"><a href="#GTK-greeter-parse-password" class="headerlink" title="GTK-greeter parse password"></a>GTK-greeter parse password</h3><p>After user input password, <code>login_cb()</code> will be called.<br>login_cb():</p>
+<ul>
+<li>Get password from UI, and respond to greeter</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">login_cb</span> <span class="params">(GtkWidget *widget)</span></span>;</span><br><span class="line"><span class="function">G_MODULE_EXPORT</span><br><span class="line"><span class="keyword">void</span></span><br><span class="line"><span class="title">login_cb</span> <span class="params">(GtkWidget *widget)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	lightdm_greeter_respond (greeter, gtk_entry_get_text (password_entry));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="LightDM-handle-password"><a href="#LightDM-handle-password" class="headerlink" title="LightDM handle password"></a>LightDM handle password</h3><p>In liblightdm-gobject/greeter.c:<br>lightdm_greeter_respond():</p>
+<ul>
+<li>write message with id “GREETER_MESSAGE_CONTINUE_AUTHENTICATION” to greeter deamon</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">lightdm_greeter_respond</span> <span class="params">(LightDMGreeter *greeter, <span class="keyword">const</span> gchar *response)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">		write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_CONTINUE_AUTHENTICATION, msg_length, &amp;offset);</span><br><span class="line">        write_int (message, MAX_MESSAGE_LENGTH, g_list_length (priv-&gt;responses_received), &amp;offset);</span><br><span class="line">        <span class="keyword">for</span> (iter = priv-&gt;responses_received; iter; iter = iter-&gt;next)</span><br><span class="line">            write_string (message, MAX_MESSAGE_LENGTH, (gchar *)iter-&gt;data, &amp;offset);</span><br><span class="line">        write_message (greeter, message, offset);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The rest process will be same with “LightDM authenticate user process”.</p>
+<ul>
+<li>In src/greeter.c, <code>read_cb</code> call <code>handle_continue_authentication()</code> depending on the message id “GREETER_MESSAGE_CONTINUE_AUTHENTICATION”.</li>
+<li><code>handle_continue_authentication()</code> calls <code>session_response()</code> to send response to session</li>
+<li>In src/session.c, <code>session_response()</code> will write response to child_session.</li>
+<li>In src/sesion-child.c, it will send response to PAM, and wait the PAM authenticate result.</li>
+</ul>
+<p>So far, the authentication process is done.</p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/LightDM/" rel="tag">#LightDM</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/15/Android-IPC-AIDL/" rel="next" title="Android IPC -- AIDL (updating)">
+                <i class="fa fa-chevron-left"></i> Android IPC -- AIDL (updating)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/09/How-LightDM-work-with-greeter-when-authentication/"
+           data-title="How LightDM work with greeter when authentication" data-url="http://yoursite.com/2016/09/09/How-LightDM-work-with-greeter-when-authentication/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/avatar.jpg"
+               alt="胖子枪迷" />
+          <p class="site-author-name" itemprop="name">胖子枪迷</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lichuan0217" target="_blank" title="github">
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1638867730" target="_blank" title="weibo">
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/li-chuan-45" target="_blank" title="zhihu">
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LightDM-configuration"><span class="nav-number">1.</span> <span class="nav-text">LightDM configuration</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Default-Session"><span class="nav-number">1.1.</span> <span class="nav-text">Default Session</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Default-Greeter"><span class="nav-number">1.2.</span> <span class="nav-text">Default Greeter</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Greeter"><span class="nav-number">2.</span> <span class="nav-text">Greeter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lightdm-gtk-greeter-preparation"><span class="nav-number">3.</span> <span class="nav-text">lightdm-gtk-greeter preparation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Installation"><span class="nav-number">3.1.</span> <span class="nav-text">Installation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Download-source-code"><span class="nav-number">3.2.</span> <span class="nav-text">Download source code</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lightdm-gtk-greeter"><span class="nav-number">3.2.1.</span> <span class="nav-text">lightdm-gtk-greeter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lightdm"><span class="nav-number">3.2.2.</span> <span class="nav-text">lightdm</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-analysis"><span class="nav-number">4.</span> <span class="nav-text">Code analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Relationship-between-lightdm-and-greeter"><span class="nav-number">4.1.</span> <span class="nav-text">Relationship between lightdm and greeter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code-structure"><span class="nav-number">4.2.</span> <span class="nav-text">Code structure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interactive-method-between-greeter-and-lightdm"><span class="nav-number">4.3.</span> <span class="nav-text">Interactive method between greeter and lightdm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PIPE-between-greeter-and-greeter-daemon"><span class="nav-number">4.3.1.</span> <span class="nav-text">PIPE between greeter and greeter daemon</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PIPE-between-greeter-daemon-and-child-session-PAM-authentication-process"><span class="nav-number">4.3.2.</span> <span class="nav-text">PIPE between greeter daemon and child session(PAM authentication process)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GTK-greeter-start-authentication"><span class="nav-number">4.4.</span> <span class="nav-text">GTK-greeter start authentication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LightDM-authenticate-user-process"><span class="nav-number">4.5.</span> <span class="nav-text">LightDM authenticate user process</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GTK-greeter-handle-message-from-lightDM"><span class="nav-number">4.6.</span> <span class="nav-text">GTK-greeter handle message from lightDM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GTK-greeter-parse-password"><span class="nav-number">4.7.</span> <span class="nav-text">GTK-greeter parse password</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LightDM-handle-password"><span class="nav-number">4.8.</span> <span class="nav-text">LightDM handle password</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">胖子枪迷</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lemonsoda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

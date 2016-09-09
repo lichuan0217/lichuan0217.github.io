@@ -1,0 +1,669 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,IPC,AIDL,Binder," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="AIDL (Android Interface Definition Language), 使用AIDL可以进行进程间的方法调用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android IPC -- AIDL (updating)">
+<meta property="og:url" content="http://yoursite.com/2016/08/15/Android-IPC-AIDL/index.html">
+<meta property="og:site_name" content="Lemon Soda">
+<meta property="og:description" content="AIDL (Android Interface Definition Language), 使用AIDL可以进行进程间的方法调用。">
+<meta property="og:image" content="http://yoursite.com/img/IPC/binder.png">
+<meta property="og:updated_time" content="2016-09-09T07:50:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android IPC -- AIDL (updating)">
+<meta name="twitter:description" content="AIDL (Android Interface Definition Language), 使用AIDL可以进行进程间的方法调用。">
+<meta name="twitter:image" content="http://yoursite.com/img/IPC/binder.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Android IPC -- AIDL (updating) | Lemon Soda </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Lemon Soda</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android IPC -- AIDL (updating)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-15T16:05:42+08:00" content="2016-08-15">
+              2016-08-15
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/15/Android-IPC-AIDL/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/15/Android-IPC-AIDL/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>AIDL (Android Interface Definition Language), 使用AIDL可以进行进程间的方法调用。<br><a id="more"></a></p>
+<h2 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h2><p>AIDL底层使用 Binder 来实现IPC。<br><code>Binder</code>是Android中的一个类，继承了<code>IBinder</code>接口。<br>从应用角度来看，<code>Binder</code>是client与server间进行通信的媒介，当<code>bindService</code>时，server会返回一个包含server业务调用的<code>Binder</code>对象。</p>
+<h3 id="Binder-运行机制"><a href="#Binder-运行机制" class="headerlink" title="Binder 运行机制"></a>Binder 运行机制</h3><p><img src="/img/IPC/binder.png" alt="Binder machanism"></p>
+<h3 id="Binder-线程问题"><a href="#Binder-线程问题" class="headerlink" title="Binder 线程问题"></a>Binder 线程问题</h3><ol>
+<li>当client通过Binder调用service的方法时，client当前线程会挂起，直到调用结束。因此，如果远程方法很耗时，则不能在UI线程中发起请求。</li>
+<li>Server端的Binder方法运行在 Binder线程池中，所以Binder方法不管是否耗时，都应该采用同步方式去实现。</li>
+</ol>
+<h3 id="Binder-死亡代理"><a href="#Binder-死亡代理" class="headerlink" title="Binder 死亡代理"></a>Binder 死亡代理</h3><p>如果Server端进程由于某种原因异常中止，会导致Binder连接断裂，从而导致Client调用失败。为了解决这个问题，Binder提供了两个方法： <code>linkToDeath</code> 与 <code>unlinkToDeath</code>。使用<code>linkToDeath</code>可以为Binder设置一个死亡代理，当Binder死亡时，可以收到通知，这时可以重新发起连接请求，恢复连接。</p>
+<p>声明 <code>DeathRecipient</code>实例， 当Binder死亡时，会调用 <code>DeathRecipient</code> 的 <code>bindDeied()</code> 方法，在此方法中可以删除以前的死亡代理，并重新连接Binder。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> IBinder.DeathRecipient binderPoolDeathRecipient = <span class="keyword">new</span> IBinder.DeathRecipient() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">binderDied</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            Log.d(TAG, <span class="string">"Binder Died..."</span>);</span><br><span class="line">            binderPool.asBinder().unlinkToDeath(binderPoolDeathRecipient, <span class="number">0</span>);</span><br><span class="line">            binderPool = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">// 重新绑定远程 Service</span></span><br><span class="line">            connectBinderPoolService();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+<p>建立连接之后，设置死亡代理<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ServiceConnection binderPoolConnection = <span class="keyword">new</span> ServiceConnection() &#123;</span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName componentName, IBinder iBinder)</span> </span>&#123;</span><br><span class="line">           binderPool = IBinderPool.Stub.asInterface(iBinder);</span><br><span class="line">           <span class="keyword">try</span> &#123;</span><br><span class="line">               <span class="comment">//设置死亡代理</span></span><br><span class="line">               binderPool.asBinder().linkToDeath(binderPoolDeathRecipient, <span class="number">0</span>);</span><br><span class="line">           &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">               e.printStackTrace();</span><br><span class="line">           &#125;</span><br><span class="line">           connectBinderPoolCountDownLatch.countDown();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="AIDL"><a href="#AIDL" class="headerlink" title="AIDL"></a>AIDL</h2><p>通过AIDL进行进程间通信，分为服务端和客户端两方面：</p>
+<p><em>服务端：</em></p>
+<ul>
+<li>创建Service，监听client的连接请求</li>
+<li>创建AIDL文件，将方法调用接口通过AIDL暴露给client</li>
+<li>在service中实现AIDL接口</li>
+</ul>
+<p><em>客户端：</em></p>
+<ul>
+<li>绑定Server提供的Service</li>
+<li>绑定成功后，将Server返回的Binder对象转化为AIDL接口类型</li>
+<li>通过AIDL接口调用服务端的方法</li>
+</ul>
+<p>本实例将声明一个<code>BookManager</code>接口，并在<code>BookManagerService</code>中实现此接口。在客户端，<code>BookManagerActivity</code>将调用Service中的方法。</p>
+<h3 id="服务端实现"><a href="#服务端实现" class="headerlink" title="服务端实现"></a>服务端实现</h3><h4 id="创建AIDL接口，并声明接口方法"><a href="#创建AIDL接口，并声明接口方法" class="headerlink" title="创建AIDL接口，并声明接口方法"></a>创建AIDL接口，并声明接口方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IBookManager.aidl</span></span><br><span class="line"><span class="keyword">package</span> top.lemonsoda.ipcdemo.aidl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> top.lemonsoda.ipcdemo.aidl.Book;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IBookManager</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addBook</span><span class="params">(in Book book)</span></span>;</span><br><span class="line">    <span class="function">List&lt;Book&gt; <span class="title">getBookList</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在AIDL中可以使用的数据类型有：</p>
+<ul>
+<li>基本数据类型(int, long, char, boolean, double)</li>
+<li>String 与 CharSequence</li>
+<li>List: 只支持 <code>ArrayList</code>, 并且元素类型必须能被AIDL支持</li>
+<li>Map: 只支持 <code>HashMap</code>, 并且key/value类型必须能被AIDL支持</li>
+<li>Parcelable: 实现 Parcelable 接口的对象</li>
+<li>AIDL: 所有AIDL接口也可以在AIDL中使用</li>
+</ul>
+<p><em>需要注意：</em></p>
+<ul>
+<li>对于 <code>Parcelable</code>,即使在同一个包下，也需要 import</li>
+<li>如果使用自定义<code>Parcelable</code>,必须新建一个和实体类同名的AIDL文件，并声明为 <code>Parcelable</code>类型</li>
+</ul>
+<p>自定义实体类Book，需要实现<code>Parcelable</code>接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> top.lemonsoda.ipcdemo.aidl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.os.Parcel;</span><br><span class="line"><span class="keyword">import</span> android.os.Parcelable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Book</span> <span class="keyword">implements</span> <span class="title">Parcelable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> bookId;</span><br><span class="line">    <span class="keyword">public</span> String bookName;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">describeContents</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel dest, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">        dest.writeInt(<span class="keyword">this</span>.bookId);</span><br><span class="line">        dest.writeString(<span class="keyword">this</span>.bookName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">(<span class="keyword">int</span> bookId, String bookName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.bookId = bookId;</span><br><span class="line">        <span class="keyword">this</span>.bookName = bookName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Book</span><span class="params">(Parcel in)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.bookId = in.readInt();</span><br><span class="line">        <span class="keyword">this</span>.bookName = in.readString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Parcelable.Creator&lt;Book&gt; CREATOR = <span class="keyword">new</span> Parcelable.Creator&lt;Book&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Book <span class="title">createFromParcel</span><span class="params">(Parcel source)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Book(source);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> Book[] newArray(<span class="keyword">int</span> size) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Book[size];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同名AIDL文件，并声明为<code>parcelable</code>类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Book.aidl</span></span><br><span class="line"><span class="keyword">package</span> top.lemonsoda.ipcdemo.aidl;</span><br><span class="line"></span><br><span class="line">parcelable Book;</span><br></pre></td></tr></table></figure>
+<h4 id="创建服务端Service"><a href="#创建服务端Service" class="headerlink" title="创建服务端Service"></a>创建服务端Service</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> top.lemonsoda.ipcdemo.aidl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BookManagerService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = BookManagerService.class.getCanonicalName();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> CopyOnWriteArrayList&lt;Book&gt; bookList = <span class="keyword">new</span> CopyOnWriteArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Binder binder = <span class="keyword">new</span> IBookManager.Stub() &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(Book book)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">            bookList.add(book);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> List&lt;Book&gt; <span class="title">getBookList</span><span class="params">()</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> bookList;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BookManagerService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        bookList.add(<span class="keyword">new</span> Book(<span class="number">0</span>, <span class="string">"Android"</span>));</span><br><span class="line">        bookList.add(<span class="keyword">new</span> Book(<span class="number">1</span>, <span class="string">"IOS"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> binder;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>NOTE:</em></strong><br>AIDL方法运行在服务端的 <code>Binder线程池</code>中，因此当多个client同时连接时，会存在多线程同时访问的情形，所以需要在AIDL中处理多线程同步。所以使用了<code>CopyOnWriteArrayList</code>来进行自动线程同步。</p>
+<p>声明Service为远程服务：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">service</span></span><br><span class="line">    <span class="attr">android:name</span>=<span class="string">".aidl.BookManagerService"</span></span><br><span class="line">    <span class="attr">android:process</span>=<span class="string">":remote"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>NOTE:</em></strong><br>进程名称以<code>&quot;:&quot;</code>开头有两个意思：</p>
+<ul>
+<li>其完整的进程名称为 packageName + “:remote”</li>
+<li>当前进程为<code>私有进程</code>，其它应用组建不能与他跑在同一个进程中。进程名称不以<code>&quot;:&quot;</code>开头，则此进程为<code>全局进程</code>，其它应用可以通过<code>ShareUID</code>方式和他跑在同一个进程中。</li>
+</ul>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/IPC/" rel="tag">#IPC</a>
+          
+            <a href="/tags/AIDL/" rel="tag">#AIDL</a>
+          
+            <a href="/tags/Binder/" rel="tag">#Binder</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/05/FragmentPagerAdapter-notifyDataChanged-无效问题分析/" rel="next" title="FragmentPagerAdapter notifyDataChanged()无效问题分析(updating...)">
+                <i class="fa fa-chevron-left"></i> FragmentPagerAdapter notifyDataChanged()无效问题分析(updating...)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/09/How-LightDM-work-with-greeter-when-authentication/" rel="prev" title="How LightDM work with greeter when authentication">
+                How LightDM work with greeter when authentication <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/15/Android-IPC-AIDL/"
+           data-title="Android IPC -- AIDL (updating)" data-url="http://yoursite.com/2016/08/15/Android-IPC-AIDL/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/avatar.jpg"
+               alt="胖子枪迷" />
+          <p class="site-author-name" itemprop="name">胖子枪迷</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lichuan0217" target="_blank" title="github">
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1638867730" target="_blank" title="weibo">
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/li-chuan-45" target="_blank" title="zhihu">
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder"><span class="nav-number">1.</span> <span class="nav-text">Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Binder-运行机制"><span class="nav-number">1.1.</span> <span class="nav-text">Binder 运行机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Binder-线程问题"><span class="nav-number">1.2.</span> <span class="nav-text">Binder 线程问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Binder-死亡代理"><span class="nav-number">1.3.</span> <span class="nav-text">Binder 死亡代理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIDL"><span class="nav-number">2.</span> <span class="nav-text">AIDL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端实现"><span class="nav-number">2.1.</span> <span class="nav-text">服务端实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建AIDL接口，并声明接口方法"><span class="nav-number">2.1.1.</span> <span class="nav-text">创建AIDL接口，并声明接口方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建服务端Service"><span class="nav-number">2.1.2.</span> <span class="nav-text">创建服务端Service</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">胖子枪迷</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lemonsoda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
