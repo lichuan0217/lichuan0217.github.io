@@ -103,7 +103,7 @@ Greeter in Ubuntu 14.04 introduction and inst">
 <meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_process_relationship.png">
 <meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_pipe_greeter.png">
 <meta property="og:image" content="http://yoursite.com/img/lightdm/lightdm_pipe_pam.png">
-<meta property="og:updated_time" content="2016-09-27T00:56:19.000Z">
+<meta property="og:updated_time" content="2016-09-27T01:42:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="How LightDM work with greeter when authentication">
 <meta name="twitter:description" content="In this post, I wll introduct the authentication process when using LightDM GTK+ Greeter in Ubuntu 14.04.The main content includes:
@@ -315,7 +315,7 @@ Greeter in Ubuntu 14.04 introduction and inst">
 <h2 id="LightDM-configuration"><a href="#LightDM-configuration" class="headerlink" title="LightDM configuration"></a>LightDM configuration</h2><p>LightDM configuration is provided by the following files:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/usr/share/lightdm/lightdm.conf.d/*.conf</span><br><span class="line">/etc/lightdm/lightdm.conf.d/*.conf</span><br><span class="line">/etc/lightdm/lightdm.conf</span><br></pre></td></tr></table></figure>
 <p>Files are read in the above order and combined togeter to make the LightDM configuration.</p>
-<p>Configuration files of LightDM<br><img src="/img/lightdm/lightdm_configuration_dir.png" alt="LightDM configuration files"></p>
+<p>Configuration files of LightDM<br><img src="/img/lightdm/lightdm_configuration_dir.png" alt="LightDM configuration files"><br>The file in later order will replace the former files.</p>
 <p>There is an additional config file:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/lightdm/users.conf</span><br></pre></td></tr></table></figure></p>
 <p>But this config file will be <strong>ignored</strong> if <code>accountsservice</code> is running on your system.<br>If you are unsure, check by command:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ps -aef |grep accountsservice</span><br></pre></td></tr></table></figure></p>
 <p><em>More configuration about LigthDM, you can refer <a href="https://wiki.ubuntu.com/LightDM" target="_blank" rel="external">LightDM wiki</a>.</em></p>
